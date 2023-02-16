@@ -58,6 +58,9 @@ export async function compile({
   cwd = process.cwd(),
   esbuildOptions,
 }: CompileOptions) {
+
+  const outdir = join(process.cwd(), filePath)
+
   const result = await esbuild({
     entryPoints: [filePath],
     metafile: true,
@@ -73,11 +76,14 @@ export async function compile({
     loader: esbuildOptions?.loader,
     define: esbuildOptions?.define,
     tsconfig: esbuildOptions?.tsconfig,
+    outdir
   });
 
   const { outputFiles, metafile } = result;
 
-  if (!outputFiles || outputFiles.length !== 1) {
+  console.log(outputFiles)
+
+  if (!outputFiles || (outputFiles.length !== 1 && outputFiles.length !== 2)) {
     throw new Error('Invalid child compilation');
   }
 
@@ -88,3 +94,4 @@ export async function compile({
     ),
   };
 }
+
